@@ -3,8 +3,8 @@
 ---
 
 ##### Integrantes:
-1. Carla Perez Gavilan - a01023033 - CSF
-2. Christain Dalma schultz - a01423166- CSF
+1. Carla Perez Gavilan Del Castillo - A01023033 - CSF
+2. Christain Dalma Schultz - A01423166- CSF
 3. Ruben Hernandez - *[Poner aquí su Matrícula]* - *[Poner aquí su campus]*
 4. *[Poner aquí Nombre y Apellidos del integrante 4]* - *[Poner aquí su Matrícula]* - *[Poner aquí su campus]*
 
