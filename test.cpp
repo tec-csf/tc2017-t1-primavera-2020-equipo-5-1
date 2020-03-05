@@ -8,8 +8,7 @@
 #include <stack>
 #include <map>
 #include <sstream>
-#include <cctype>
-
+#include "polinome.cpp"
 
 using namespace std;
 
@@ -55,67 +54,6 @@ class Instruction{
 
 };
 
-class Polynome{
-    public:
-    map<string, int> variables;
-
-    void add(string variable, int value){
-        variables.insert(pair<string, int>(variable,value));
-    }
-
-    Polynome(){}
-
-    void addPoly(string polinome){
-        string acumulatedKey;
-        string acumulatedValue;
-        for(int i=0; i<polinome.length(); i++){
-            if(polinome[i] == '+' || polinome[i] == '-' || i==polinome.length()-1){
-                
-                    if(i==polinome.length()-1){
-                        if(!isdigit(polinome[i])){
-                            acumulatedKey+=polinome[i];
-                        }
-                        else if(isdigit(polinome[i])){
-                            acumulatedValue+=polinome[i];
-                        }else if(polinome[i]=='-'){
-                            acumulatedValue="-"+acumulatedValue;
-                        }
-                       
-                    }
-                     if(acumulatedValue.empty()){
-                        acumulatedValue= "1";
-                    }
-                    if(acumulatedKey.empty()){
-                        acumulatedKey= "const";
-                    }
-
-                    cout<<"acumulated Key"<<acumulatedKey<<" acumulated Value "<< acumulatedValue<<endl;
-
-                    if(variables.count(acumulatedKey) == 0){
-                    variables.insert(pair<string, int> (acumulatedKey, stoi(acumulatedValue)));
-                    }else{
-                    variables[acumulatedKey]+=stoi(acumulatedValue);
-                    }
-                acumulatedKey="";
-                acumulatedValue="";
-            }
-            else if(!isdigit(polinome[i])){
-                acumulatedKey+=polinome[i];
-            }
-            else if(isdigit(polinome[i])){
-                acumulatedValue+=polinome[i];
-            }
-          
-        }
-    }
-
-    void printPoly(){
-    for (map<string, int>::iterator iter = variables.begin(); iter != variables.end(); iter++)
-        {
-    cout << "Key: " << iter->first << endl << "Values:" << iter->second<<endl;
-    }
-    }
-};
 vector<string> split(string strToSplit, char delimeter)
 {
     stringstream ss(strToSplit);
@@ -236,26 +174,21 @@ string analyzeFor(string instruction){
     int b = countElemental(comparison);
     int c = countElemental(increment);
 
+    
+
     string cycle_temp=cicleTimes(instruction);
-    return to_string(a)+"+"+to_string(b)+"*("+cycle_temp+")+"+to_string(c)+"*("+cycle_temp+")";
+
+    
+
+    Polynome B;
+    B.multiplyS(to_string(b), cycle_temp+"1");
+    Polynome C;
+    C.multiplyS(to_string(c), cycle_temp);
+    cout<<"this is the complexity"<<to_string(a)+B.printPoly()+C.printPoly();
+    return to_string(a)+B.printPoly()+C.printPoly();
     
 }
 
-// string checkPrint(string instruction){
-//     bool insideQuotations =false;
-//     int saveStart;
-//     for(int i=0; i<instruction.length(); i++){
-//         if(instruction[i]=='/" '){
-//             if(!insideQuotations){
-//                 insideQuotations = true;
-//                 saveStart = i;
-//             }else{
-//                 insideQuotations = false;
-//                 saveEnd =  i;
-//             }
-//         }
-//     }
-// }
 
 
 int main(int argc, char* argv[])
@@ -337,7 +270,6 @@ int main(int argc, char* argv[])
         (totalComplexity.at(i)).printInstruction();
     }   
 
-   
 
     cout<<"ciclos"<<endl;
     while(!ciclos.empty()){
