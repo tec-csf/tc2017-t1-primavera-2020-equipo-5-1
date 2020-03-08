@@ -344,7 +344,6 @@ class Analyzer{
                 ciclos.push(cicleTimes(current));
             }else if(identifyInstruction(current) == 5)
             {
-                analyzeWhile(current, i);
             }else{
                 if(current.find("{") != string::npos){
                     ciclos.push(" ");
