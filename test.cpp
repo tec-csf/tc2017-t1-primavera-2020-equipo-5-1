@@ -379,7 +379,10 @@ class Analyzer{
 };
 int main(int argc, char* argv[])
 {
-   cout<<"hola"<<endl;
+   Anlyzer a;
+   a.readFile(argc, argv);
+   a.analyzeComplexity();
+   a.printComplexity();
   
 
 
