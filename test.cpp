@@ -381,8 +381,6 @@ int main(int argc, char* argv[])
 {
    Analyzer a;
    a.readFile(argc, argv);
-   a.analyzeComplexity();
-   a.printComplexity();
   
 
 
