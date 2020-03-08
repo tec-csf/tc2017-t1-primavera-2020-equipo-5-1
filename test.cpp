@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <string>
 #include <fstream>
 #include <vector>
 #include <iomanip>
@@ -8,51 +9,15 @@
 #include <stack>
 #include <map>
 #include <sstream>
-#include "polinome.cpp"
+#include <tuple>
+#include "instruction.cpp"
+
 
 using namespace std;
 
 
 //clase instrucción
 
-class Instruction{
-    public:
-    int noLine;
-    string instruction;
-    string cycle;
-    string complexity;
-    int eo;
-
-    Instruction(string instruction, int noLine){
-        this->instruction = instruction;
-        this->noLine = noLine;
-        cycle = "1";
-        complexity = "0";
-        eo = 0;
-    }
-
-    template<typename T> void printElement(T t, T t2, T t3, T t4, T t5,const int& width)
-    {
-    cout << '|' << setw(width) << t << '|' << setw(width) << t2 << '|' << setw(width) << t3 << '|' << setw(width) << t4 << '|' << setw(width) << t5 << '|'<<endl;
-
-    
-    }
-
-    void printInstruction(){
-        string eo_s= to_string(eo);
-        string no_s= to_string(noLine);
-        printElement(no_s, instruction.substr(0,30), cycle, complexity, eo_s, 30);
-    }
-
-    void printTitles(){
-        printElement("no", "instrucción", "ciclo", "complejidad", "OE", 30);
-    }
-    void setComplexity(string complexity, int eo){
-        this->complexity = complexity;
-        this->eo = eo;
-    }
-
-};
 
 vector<string> split(string strToSplit, char delimeter)
 {
@@ -67,7 +32,7 @@ vector<string> split(string strToSplit, char delimeter)
 }
 
 int identifyInstruction(string instruction){
-    string identifiersInst[] = { "cout", "printf", "return", "if", "for", "while", "else"};
+    string identifiersInst[] = { "cout", "printf", "return", "if", "for", "while", "main", "else"};
 
     for(int i=0; i<7; i++){
         if(instruction.find(identifiersInst[i]) != string::npos){
@@ -103,13 +68,32 @@ string findTypeComparison(string comparison, int operation){
 }
 
 string findIncrement(string increment){
-    string increm= "abcd";
-    if(increment.find("=") != string::npos){
-        return increment.substr(increment.find("=")+1,(increment.find(")")-4));
-    }else if(increment.find("++") != string::npos || increment.find("--") != string::npos){
-        return "";
+    if(increment.find("+=") != string::npos || increment.find("-=") != string::npos){
+        if(increment.find(")") != string::npos){
+            return increment.substr(increment.find("=")+1, increment.find(")")-increment.find("=")-1);
+        }else{
+            return increment.substr(increment.find("=")+1, increment.find(";")-increment.find("=")-1);
+
+        }
     }
-     return "";
+    else if(increment.find("++") != string::npos || increment.find("--") != string::npos){
+        return "";
+    }else if(increment.find("+") != string::npos){
+        if(increment.find(")") != string::npos){
+            return increment.substr(increment.find("+")+1, increment.find(")")-increment.find("+")-1);
+        }else{
+            return increment.substr(increment.find("+")+1, increment.find(";")-increment.find("+")-1);
+        }
+    }else if(increment.find("-") != string::npos){
+        if(increment.find(")") != string::npos){
+            return increment.substr(increment.find("-")+1, increment.find(")")-increment.find("-")-1);
+        }else{
+            return increment.substr(increment.find("")+1, increment.find(";")-increment.find("-")-1);
+        }
+    }else{
+        return "";
+
+    }
 }
 
 string cicleTimes(string instruction){
@@ -118,7 +102,6 @@ string cicleTimes(string instruction){
     string comparison = partsOfFor.at(1);
     string initialized = partsOfFor.at(0);
     string increment = partsOfFor.at(2);
-    Polynome times;
     string temp;
 
     if(increment.find("++") != string::npos){
@@ -136,6 +119,23 @@ string cicleTimes(string instruction){
     if(increment.find("-") != string::npos){
         return initialized.substr(initialized.find("=")+1)+"-"+findTypeComparison(comparison, -1)+"*(1/"+findIncrement(increment)+")";
     }
+
+    if(increment.find("*=") != string::npos){
+        return " log"+increment.substr(increment.find("=")+1, increment.find(")")-increment.find("=")-1)+"("+findTypeComparison(comparison, 1)+"-"+initialized.substr(initialized.find("=")+1)+")";
+    }
+
+    if(increment.find("/=") != string::npos){
+        return " log"+increment.substr(increment.find("=")+1, increment.find(")")-increment.find("=")-1)+"("+initialized.substr(initialized.find("=")+1)+"-"+findTypeComparison(comparison, -1)+")";
+    }
+
+    if(increment.find("*") != string::npos){
+        return " log"+increment.substr(increment.find("*")+1, increment.find(")")-increment.find("*")-1)+"("+findTypeComparison(comparison, 1)+"-"+initialized.substr(initialized.find("=")+1)+")";
+    }
+
+     if(increment.find("/") != string::npos){
+        return " log"+increment.substr(increment.find("/")+1, increment.find(")")-increment.find("/")-1)+"("+initialized.substr(initialized.find("=")+1)+"-"+findTypeComparison(comparison, -1)+")";
+    }
+
     return "error";
 }
 
@@ -177,31 +177,28 @@ string analyzeFor(string instruction){
     
 
     string cycle_temp=cicleTimes(instruction);
-
-    
-
-    Polynome B;
-    B.multiplyS(to_string(b), cycle_temp+"1");
-    Polynome C;
-    C.multiplyS(to_string(c), cycle_temp);
-    cout<<"this is the complexity"<<to_string(a)+B.printPoly()+C.printPoly();
-    return to_string(a)+B.printPoly()+C.printPoly();
+    return to_string(a)+"+"+to_string(b)+"*("+cycle_temp+")+"+to_string(c)+"*("+cycle_temp+"+1)";
     
 }
 
 
 
-int main(int argc, char* argv[])
-{
+
+
+class Analyzer{
+    public:
     vector<Instruction> totalComplexity;
     string x = "";
     ifstream* inFile;
     int counterLines = 0;
     stack<string> ciclos;
+    map<string , string> assignedVariables;
+    map<string, int> searching;
 
-   
-   
-    if(argc == 1)
+
+    void readFile(int argc, char* argv[])
+    {
+        if(argc == 1)
     {
         cout << "no se puede leer porque no ingreso el nombre del archivo";
 
@@ -227,26 +224,139 @@ int main(int argc, char* argv[])
             }
             inFile->close();
         }
+    }
+    }
 
-        for (int i=0; i<counterLines; i++){
+    void addAsigned(string instruction)
+   {
+    vector<string> instruct= split(instruction, ',');
+    if(instruction.find("int") != string::npos || instruction.find("float") != string::npos || instruction.find("double") != string::npos)
+    {
+    for(int i=0; i<instruct.size(); i++){
+        string current= instruct.at(i);
+    if(current.find("=") != string::npos)
+    {
+        string key ="'";
+        if(current.find("int") != string::npos || current.find("float") != string::npos || current.find("double") != string::npos)
+        {
+            key = current.substr(current.find(" "), current.find("=")-3);
+            
+            
+        }else{
+            key = current.substr(0, current.find("="));
+        }
+
+        string element = current.substr(current.find("=")+1);
+        assignedVariables.insert(pair<string, string> (key, element));
+    }
+    }
+    }
+   }
+
+   string checkWhile(string instruction){
+    for(auto const& [key, val] : searching){
+         if(instruction.find(key) != string::npos){
+             return key;
+         }
+    }
+     return "not here";
+   
+}
+
+   void analyzeWhile(string instruction, int line){
+       int elemental = countElemental(instruction.substr(instruction.find("("), instruction.find("(")-1));
+       string symbols[] = {"<","<=", ">",">=","==","!="};
+       string delimeter ="";
+        for(int i= 0; i<6; i++){
+            if(instruction.find(symbols[i])!= string::npos){
+                delimeter= symbols[i];
+            }
+        }
+        
+        string var1= instruction.substr(instruction.find("(")+1, instruction.find(delimeter)-instruction.find("(")-1);
+        string var2= instruction.substr(instruction.find(delimeter)+1,instruction.find(")")-instruction.find(delimeter)-1);
+        searching.insert(pair<string, int> (var1, line));
+        searching.insert(pair<string, int> (var2, line));
+        
+      for(int i= line+1; i<totalComplexity.size(); i++){
+          string current = totalComplexity.at(i).instruction;
+        if(current != "}"){
+            string temporaryWhile = checkWhile(current);
+                    if(temporaryWhile != "not here"){
+                        addWhile(current, temporaryWhile);
+                    }
+        }
+      }
+      totalComplexity.at(line).complexity = " "+to_string(elemental)+totalComplexity.at(line).complexity;
+      ciclos.push(totalComplexity.at(line).complexity);
+       totalComplexity.at(line).complexity =  totalComplexity.at(line).complexity+"+1";
+
+    }
+
+    void addWhile(string instruction, string variable){
+        string incrementing = variable;
+        int whileIndex = searching[variable];
+        string initializing;
+        searching.erase(variable);
+         for(auto const& [key, val] : searching){
+         if(whileIndex == val){
+             initializing= key;
+         }
+        }
+
+        searching.erase(initializing);
+        if(findIncrement(instruction).empty()){
+            totalComplexity.at(whileIndex).complexity = "*("+variable+"-"+initializing+")";
+
+        }else{
+            totalComplexity.at(whileIndex).complexity = "*("+variable+"-"+initializing+")"+"/"+findIncrement(instruction);
+
+        }
+        
+
+    }
+    int analyzeIF(string instruction){
+        string str = instruction; // instruccion a analizar (en este caso IF)
+
+        int posParentesis = str.find('(');
+        int posParentesis2 = str.find(')');
+  
+        string str2 = str.substr(posParentesis+1, (posParentesis2-1)-posParentesis);
+        return countElemental(str2);
+    }
+
+
+   void analyzeComplexity(){
+    for (int i=0; i<counterLines; i++){
+
             string current = totalComplexity.at(i).instruction;
-            if(identifyInstruction(current) == 4){
+            if(identifyInstruction(current)< 3){
+
+            }
+            else if(identifyInstruction(current) == 3)
+            {
+                totalComplexity.at(i).setComplexity(to_string(analyzeIF(current)), analyzeIF(current));
+                ciclos.push(" ");
+
+            } else if(identifyInstruction(current) == 4)
+            {
                 totalComplexity.at(i).complexity = analyzeFor(current);
                 ciclos.push(cicleTimes(current));
-            }else if(identifyInstruction(current) < 2){
-                
-            }
-            else{
-                int contElemental = countElemental(current);
+            }else if(identifyInstruction(current) == 5)
+            {
+                analyzeWhile(current, i);
+            }else{
+                if(current.find("{") != string::npos){
+                    ciclos.push(" ");
+                }
+                int contElemental = countElemental(current);               
                 totalComplexity.at(i).setComplexity(to_string(contElemental), contElemental);
-
             }
-
 
              if(!ciclos.empty()){
                 stack<string> temp;
                  while(!ciclos.empty()){
-                     temp.push(ciclos.top());
+                    temp.push(ciclos.top());
                     totalComplexity.at(i).cycle += ciclos.top();
                      ciclos.pop();
                  }
@@ -257,27 +367,31 @@ int main(int argc, char* argv[])
              }
 
             if(current.find("}") != string::npos){
+                
                 ciclos.pop();
             }
         }
        
+   }
+
   
-    }
-    //
-    //print table
-    totalComplexity.at(0).printTitles();
+
+    void printComplexity(){
+         totalComplexity.at(0).printTitles();
     for(int i=0; i<totalComplexity.size(); i++){
         (totalComplexity.at(i)).printInstruction();
-    }   
-
-
-    cout<<"ciclos"<<endl;
-    while(!ciclos.empty()){
-        cout<<ciclos.top()<<endl;
-        ciclos.pop();
     }  
+    }
+   
 
-  
+
+};
+int main(int argc, char* argv[])
+{
+   Analyzer a;
+   a.readFile(argc, argv);
+   a.analyzeComplexity();
+   a.printComplexity();
 
 
 }

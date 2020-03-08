@@ -7,14 +7,16 @@ using namespace std;
 
 class Variable{
     public:
-        int potencia;
+        vector<int> potencia;
         int coef;
         string variable;
+        int counterPotencia;
 
-    Variable(int potencia, int coef, string variable){
+    Variable(int poten, int coef, string variable){
         this->variable = variable;
         this->coef = coef;
-        this->potencia = potencia;
+        potencia.push_back(poten);
+        counterPotencia = 0;
     }
 };
 
@@ -26,6 +28,7 @@ class Polynome{
 
     void add(string variable, int value, int potencia){
         Variable v = Variable(potencia, value, variable);
+        v.counterPotencia++;
         variables.push_back(v);
        
     }
@@ -48,99 +51,61 @@ class Polynome{
     {
         bool insideP= false;
         string potenciaT = "";
+        string coefAcum = "";
+        string varAcum = "";
+
+
         for(int i=0; i<polinome.length(); i++)
         {                 
 
-            int pot=0;
-            int p= 0;
+            int pot = 0;
             if(polinome[i] == '*'){
                 insideP=true;
             }
 
-            //si es un +
-            if(polinome[i]== '-'){
-
-                if(coef.empty()){
-                    coef="1";
-                    pot = 0;
-                }
-                if(var.empty()){
-                    var = "const";
-                    pot=0;
-                }else if(potenciaT.empty()){
-                    pot=1;
-                }else{
-                    pot=stoi(potenciaT);
-                }
-
-                if(find(var) !=-1){
-                    variables.at(find(var)).coef+=stoi(coef);
-                }else{
-                    add(var, stoi(coef), pot);
-                }
-                var="";
-                coef="";
-                potenciaT="";
-                pot=0;
-            } 
-            
             //si es un -
-            else if(polinome[i]== '+'){
+            if(polinome[i]== '-' || polinome[i]== '+'){
 
-                 if(coef.empty()){
-                    coef="1";
-                    pot=1;
+                if(coefAcum.empty()){
+                    coefAcum="1";
                 }
                 if(var.empty()){
-                    var = "const";
-                    pot = 0;
+                    varAcum = "const";
                 }else if(potenciaT.empty()){
                     pot=1;
                 }else{
                     pot=stoi(potenciaT);
                 }
-                
-                if(find(var) != -1){
 
-                    variables.at(find(var)).coef+=stoi(coef);
-
-                  
+                if(find(varAcum) !=-1){
+                    variables.at(find(varAcum)).coef+=stoi(coef);
                 }else{
-                    add(var, stoi(coef), pot);
-
+                    add(varAcum, stoi(coef), pot);
                 }
-                var="";
-                coef="";
+                varAcum="";
+                coefAcum="";
                 potenciaT="";
                 pot=0;
                 insideP=false;
 
-           
-            }
-            
-            //si es un número 
+            }  
+
             else if(isdigit(polinome[i]) && !insideP)
             {
 
-                coef+=polinome[i];
+                coefAcum+=polinome[i];
             }
-
-            //si es potencia
             else if(insideP)
             {
                 if(polinome[i] != '*'){
                     potenciaT+=polinome[i];
-                    p = stoi(potenciaT);
+                    pot = stoi(potenciaT);
                 }
-                
-
             }else{
-
-                var+=polinome[i];
+                varAcum+=polinome[i];
             }
 
             if(i== polinome.length()-1){
-               cout<<" this is the var for "<<var;
                 if(var.empty()){
                     var = "const";
                     pot= 0;
@@ -151,24 +116,21 @@ class Polynome{
                 }
                 if(find(var) != -1)
                 { 
-                    int a= variables.at(find(var)).coef;
+                    int a= variables.at(find(varAcum)).coef;
                     int b= stoi(coef);
 
                     a+=b;
-                    variables.at(find(var)).coef = a;
-                    insideP=false;
+                    variables.at(find(varAcum)).coef = a;
               
-
                 }else
                 {
-                    add(var, stoi(coef), pot);
-                    insideP=false;
-                   
+                    add(varAcum, stoi(coefAcum), pot);
                 }
                 var="";
                 coef="";
                 potenciaT="0";
                 pot=0;
+                insideP=false;
             }
             
         }
@@ -178,10 +140,10 @@ class Polynome{
     void multiply(Polynome A, Polynome B)
     {
             
-        int count = 0;
         string varTemp;
         int potenciaTemp;
         int coefTemp;
+
         for (int i = 0; i < A.variables.size(); i++)
         {
            for(int j=0; j<B.variables.size(); j++)
@@ -189,9 +151,10 @@ class Polynome{
                string a = A.variables.at(i).variable;
                string b= B.variables.at(j).variable;
               
-               if(strcmp( a.c_str(), b.c_str()) == 0)
+               if(a.find(b.c_str()) != -1)
                {
-                    potenciaTemp = A.variables.at(i).potencia+B.variables.at(j).potencia;
+                   int position =a.find(b.c_str());
+                    potenciaTemp = A.variables.at(i).potencia.at(position)+B.variables.at(j).potencia;
                     varTemp= a;
                }else
                {
@@ -267,13 +230,23 @@ class Polynome{
         Polynome C;
         C.multiply(A,B);
     
+        Polynome D;
+        cout<<"aqui sin simplificar"<<endl;
         cout<<C.printPoly()<<endl;
+        D.simplify(C.printPoly());
+        cout<<"aqui simplificado"<<endl;
+        cout<<D.printPoly()<<endl;
 
     }
 
 
 };
 
+int main(){
+    Polynome final;
+    final.multiplyS("n*2+2", "2n+3"); //2n
+
+}
 
 
 
