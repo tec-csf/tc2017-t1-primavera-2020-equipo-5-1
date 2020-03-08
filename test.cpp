@@ -298,7 +298,7 @@ class Analyzer{
         int whileIndex = searching[variable];
         string initializing;
         searching.erase(variable);
-         for(auto const& [key, val] : searching){
+         for(auto& [key, val] : searching){
          if(whileIndex == val){
              initializing= key;
          }
