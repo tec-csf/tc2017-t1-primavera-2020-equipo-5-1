@@ -379,7 +379,7 @@ class Analyzer{
 };
 int main(int argc, char* argv[])
 {
-   Anlyzer a;
+   Analyzer a;
    a.readFile(argc, argv);
    a.analyzeComplexity();
    a.printComplexity();
