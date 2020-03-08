@@ -254,11 +254,7 @@ class Analyzer{
    }
 
    string checkWhile(string instruction){
-    for(auto& [key, val] : searching){
-         if(instruction.find(key) != string::npos){
-             return key;
-         }
-    }
+    
      return "not here";
    
 }
@@ -298,11 +294,7 @@ class Analyzer{
         int whileIndex = searching[variable];
         string initializing;
         searching.erase(variable);
-         for(auto& [key, val] : searching){
-         if(whileIndex == val){
-             initializing= key;
-         }
-        }
+         
 
         searching.erase(initializing);
         if(findIncrement(instruction).empty()){
