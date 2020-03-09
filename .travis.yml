@@ -12,5 +12,5 @@ addons:
       - g++-7
       - cmake
 script:
-  - g++ test.cpp -o test
-  - ./test -i test3.cpp
+  - g++ test.cpp 
+  - ./a.out -i test3.cpp
