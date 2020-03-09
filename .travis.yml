@@ -3,5 +3,5 @@ dist: bionic
 compiler: gcc
 
 script: 
-  - g++ analyzer.cpp -std=c++17 -o travis_gcc cpp17
+  - g++ analyzer.cpp -std=c++17 -o travis_gcc_cpp17
   - ./travis_gcc_cpp17 -i code.cpp

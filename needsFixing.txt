@@ -1,7 +1,7 @@
-1. logs be counted as variables in multiplications
-2. simplification and multiplication using polinome class in: for with log, while with log, while normal
-3. while times not in cicles of same while (for has same problem)
-4. calculating total complexity
-5. checking c++17 guidelines
-6. testing with different types of code
-7. writting manual 
+1. logs be counted as variables in multiplications (30 min)
+2. simplification and multiplication using polinome class in: for with log, while with log, while normal (1 hour)
+3. while times not in cicles of same while (for has same problem) (30 min)
+4. calculating total complexity (1 hour)
+5. checking c++17 guidelines/ multiply (2 hour)
+6. testing with different types of code (1 hour)
+7. writting manual (30 min)
