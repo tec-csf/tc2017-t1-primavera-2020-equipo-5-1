@@ -1,5 +1,7 @@
 language: cpp
-compiler: gcc
+compiler: 
+  - clang
+  - gcc
 
 script: 
   - g++ test.cpp -std=c++17
