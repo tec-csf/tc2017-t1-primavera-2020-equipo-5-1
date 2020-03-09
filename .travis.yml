@@ -15,5 +15,5 @@ install:
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90
 
 script:
-  - clang++ test.cpp  
+  - g++ -std=c++17 test.cpp  
   - ./a.out -i test3.cpp
