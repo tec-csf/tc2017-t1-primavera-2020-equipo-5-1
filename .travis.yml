@@ -2,7 +2,11 @@ language: cpp
 compiler: 
   - clang
   - gcc
-
+install:
+  - sudo apt-get install -qq g++-6
+  - sudo apt-get install clang
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90
+  
 script: 
   - g++ test.cpp -std=c++17
   - ./a.out -i test3.cpp
