@@ -10,7 +10,7 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-7
-      - cmake
+      - libstdc++-7-dev
 script:
   - g++ test.cpp 
   - ./a.out -i test3.cpp
