@@ -1,10 +1,15 @@
 language: cpp
+dist: bionic
 compiler: gcc
 
 script: 
+<<<<<<< HEAD
   - g++ test.cpp -std=c++17 -o travis_gcc cpp17
 <<<<<<< HEAD
   - ./travis_gcc_cpp17
 =======
+=======
+  - g++ test.cpp -std=c++17 -o travis_gcc_cpp17
+>>>>>>> a0f2d2a4de7fb9fac4a8119097c86533bde6514e
   - ./travis_gcc_cpp17 -i test3.cpp
 >>>>>>> 687a95dc9e30d9c847afaa4df1605697db489cfe
