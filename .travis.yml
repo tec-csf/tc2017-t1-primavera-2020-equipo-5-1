@@ -48,4 +48,5 @@ before_install:
     - eval "${MATRIX_EVAL}"
 
 script: 
-- g++ -Wall -Werror -o software *.cpp && ./software -i test3.cpp
+- g++ -std+=c++17 test.cpp 
+-./a.out -i test3.cpp
