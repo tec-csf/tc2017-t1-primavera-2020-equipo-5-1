@@ -12,5 +12,5 @@ addons:
       - g++-7
       - libstdc++-7-dev
 script:
-  - g++ test.cpp 
+  - g++ -std=c++17 test.cpp 
   - ./a.out -i test3.cpp
