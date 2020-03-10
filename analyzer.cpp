@@ -754,13 +754,13 @@ class Analyzer{
                 cout<<final<<endl;
                 writeFile(final);
                 system("pip install sympy");
-                system("python3 poly.py");
+                system("python poly.py");
 
                 
             }
 
 /**
- * Writes in file called ereadample.treadt
+ * Writes in file called example.text
  * 
  */
    
