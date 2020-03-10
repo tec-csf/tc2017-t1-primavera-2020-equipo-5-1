@@ -38,13 +38,27 @@ class Mono{
         string acumVar = "";
         string acumPot = "";
         bool getPot = false;
+        bool logar = false;
         for(int i=0; i<mono.length(); i++){
-            if(isdigit(mono[i]) || mono[i]=='-' ){
-                if(getPot){
-                    acumPot += mono[i];
-                }else{
+
+            if(mono[i+1] == '('){
+                acumVar+=mono[i];
+                logar = true;
+            }else if(mono[i] == ')'){
+                acumVar+=mono[i];
+                logar = false;
+            }
+            else if(isdigit(mono[i]) || mono[i]=='-'){
+                if(!logar){
+                    if(getPot){
+                    acumPot+= mono[i];
+                    }else{
                     acumCoef+=mono[i];
+                    }
+                }else{
+                    acumVar+=mono[i];
                 }
+                
             }else{
                 if(mono[i]=='*'){
                     getPot = true;
@@ -63,6 +77,10 @@ class Mono{
                     if(acumCoef.empty()){
                         acumCoef="1";
                     }
+
+                    if(acumCoef =="-"){
+                        acumCoef="-1";
+                    }
                     if(acumCoef!="0"){
                         addVar(stoi(acumPot), stoi(acumCoef), acumVar);
                         getPot=false;
@@ -74,7 +92,6 @@ class Mono{
                     }
                     if(mono[i]!='.'){
                          acumVar+=mono[i];
-
                     }
 
 
@@ -95,6 +112,9 @@ class Mono{
                     }
                     if(acumCoef.empty()){
                         acumCoef="1";
+                    }
+                    if(acumCoef =="-"){
+                        acumCoef="-1";
                     }
                     if(acumCoef!="0"){
 
@@ -148,17 +168,46 @@ class Poly{
         string acumCoef="";
         string final;
         bool varStart = false;
+        bool logar = false;
         for(int i=0; i<instruction.length(); i++){
-            if(instruction[i]=='+' || instruction[i]=='-' || i== instruction.length()-1){
-                if(i== instruction.length()-1){
-                    if(isdigit(instruction[i])){
+            if(instruction[i+1]=='('){
+                logar=true;
+            }else if(instruction[i]==')'){
+                logar= false;
+            }
+            if(i== instruction.length()-1){
+                if(isdigit(instruction[i]) && !varStart){
                         acumCoef+=instruction[i];
                     }else{
-                        if(instruction[i]!= ' '){
-                            acumVar+=instruction[i]; 
+                        if(instruction[i]!= ' ' ){
+                            acumVar+=instruction[i];
                         }
                     }
+                 if(!logar){
+                if(acumCoef.empty()){
+                    acumCoef = "1";
                 }
+                if(acumVar.empty()){
+                    acumVar = "const";
+                }
+                if(acumCoef!="0" && acumCoef!="-0"){
+                    if(acumCoef=="-"){
+                        acumCoef ="-1";
+                    }
+
+                    addPoly(acumVar, stoi(acumCoef));
+                    if(instruction[i]=='-'){
+                        acumCoef="-";
+                    }else{
+                        acumCoef="";
+                    }
+                    varStart = false;
+                    acumVar="";
+                    }
+                 }      
+
+            }else if(instruction[i]=='+' || (instruction[i]=='-' && i!=0)){
+                if(!logar){
                 if(acumCoef.empty()){
                     acumCoef = "1";
                 }
@@ -169,22 +218,26 @@ class Poly{
                     if(acumCoef=="-"){
                         acumCoef ="-1";
                     }
-                    addPoly(acumVar, stoi(acumCoef));
+                    addPoly(acumVar, stoi(acumCoef));      
                 }
-                if(instruction[i]=='-'){
-                    acumCoef="-";
+                    if(instruction[i]=='-'){
+                        acumCoef="-";
+                    }else{
+                        acumCoef="";
+                    }
+                    varStart = false;
+                    acumVar="";
                 }else{
-                    acumCoef="";
+                 acumVar+=instruction[i];
                 }
-                varStart = false;
-                acumVar="";
-            }
-            else if(isdigit(instruction[i]) && !varStart){
+                
+            }else if((isdigit(instruction[i]) || instruction[i] == '-') && !varStart){
                 acumCoef+=instruction[i];
             }else{
                 if(instruction[i]!= ' '){
                 acumVar+=instruction[i];
                 }
+                varStart = true;
             }
         }
 
@@ -208,11 +261,14 @@ class Poly{
                 if(val>0){
                     symbol = "+";
                 }
+
                 final+=symbol+printVal+printKey;
             }
             if(final[0]=='+'){
                 final= final.substr(final.find('+')+1);
             }
+
+               
             return final;
 
     }
@@ -236,9 +292,12 @@ class Poly{
         string printVar;
         for(int i=0; i<m.variables.size(); i++){
             Variable currentVar= m.variables.at(i);
-            if(currentVar.coef ==1){
+            if(currentVar.coef == 1 && currentVar.variable != "const"){
                 printCoef="";
-            }else{
+            }else if(currentVar.coef == -1 && currentVar.variable != "const"){
+                printCoef="-";
+            }
+            else{
                 printCoef=to_string(currentVar.coef);
             }
 
@@ -252,8 +311,9 @@ class Poly{
             }else{
                 printVar= currentVar.variable;
             }
-            final+=printCoef+printVar+printPot;
+            final+=printCoef+printVar+printPot+".";
         }
+        final= final.substr(0, final.length()-1);
         return final;
     }
 
@@ -261,33 +321,38 @@ class Poly{
         Mono mono_a;
         mono_a.turnToMonome(a);
         Mono mono_b;
-
         mono_b.turnToMonome(b);
 
+       
         Mono final;
-
         for(int i=0; i<mono_a.variables.size(); i++){
             Variable current= mono_a.variables.at(i);
-            if(final.findVar(current.variable) == -1){
-                final.addVar( current.potencia, 1, current.variable);
+            if(final.findVar(current.variable) == -1 ){
+                final.addVar(current.potencia, 1, current.variable);
             }else{
-                int index = final.findVar(current.variable);
-                final.variables.at(index).potencia+=current.potencia;
+                    int index = final.findVar(current.variable);
+                    final.variables.at(index).potencia+=current.potencia;
             }
             final.variables.at(0).coef*= current.coef;
-
         }
         for(int i=0; i<mono_b.variables.size(); i++){
             Variable current= mono_b.variables.at(i);
             if(final.findVar(current.variable) == -1){
                 final.addVar(current.potencia, 1, current.variable);
             }else{
-                int index = final.findVar(current.variable);
-                final.variables.at(index).potencia+=current.potencia;
+                    int index = final.findVar(current.variable);
+                    final.variables.at(index).potencia+=current.potencia;
             }
             final.variables.at(0).coef*= current.coef;
         }
-
+        if(final.variables.size()>1){
+            for(int i=0; i< final.variables.size(); i++){
+            if(strcmp(final.variables.at(i).variable.c_str(), "const") == 0 && final.variables.at(i).coef==1){
+                final.variables.erase(final.variables.begin()+i);
+            }
+            }
+        }
+        
         return mono2str(final);
 
     }
@@ -297,58 +362,118 @@ class Poly{
         Poly pola;
         Poly polb;
         string final ="";
+        bool logar = false;
         for(int i=0; i<a.length(); i++){
-            if(a[i]=='+' || a[i]=='-'){
-                if(acumMono != "0"){
-                    pola.monomes.push_back(acumMono);
+             if(a[i]=='('){
+                logar = true;
+                acumMono+=a[i]; 
+ 
+            }else if(a[i]==')'){
+                logar = false;
+                acumMono+=a[i];  
+                pola.monomes.push_back(acumMono);
+                acumMono="";
+
+            }
+            else if(a[i]=='+' || a[i]=='-'){
+                if(acumMono != "0" && acumMono != ""){
+                    if(logar == false){
+                        pola.monomes.push_back(acumMono);
+                    }else{
+                        acumMono+=a[i];  
+
+
+                    }
                 }
-                 if(a[i]=='-'){
-                        acumMono="-";
-                }else{
-                    acumMono="";
-                }
-            }else if(i==a.length()-1){
-                acumMono+=a[i];
-                if(acumMono != "0"){
-                    pola.monomes.push_back(acumMono);
-                    
-                }
+                if(!logar){
                 if(a[i]=='-'){
                         acumMono="-";
                 }else{
                     acumMono="";
                 }
+                }
+                
             }else{
                 acumMono+=a[i];  
             }
+            
+            if(i==a.length()-1){
+                if(acumMono != "0" && acumMono != ""){
+                    if(!logar){
+                    pola.monomes.push_back(acumMono);
+                    }else{
+                        if(a[i]!=')'){
+                            acumMono+=a[i];  
+                        }
+                    }
+                }
+                if(!logar){
+                if(a[i]=='-'){
+                        acumMono="-";
+                }else{
+                    acumMono="";
+                }
+                }
+            }
+
         }
 
         for(int i=0; i<b.length(); i++){
-            if(b[i]=='+' || b[i]=='-' ){
-                if(acumMono != "0"){
+             if(b[i]=='('){
+                logar = true;
+                acumMono+=b[i]; 
+ 
+            }else if(b[i]==')'){
+                logar = false;
+                acumMono+=b[i];  
                 polb.monomes.push_back(acumMono);
+                acumMono="";
+
+            }
+            else if(b[i]=='+' || b[i]=='-'){
+                if(acumMono != "0" && acumMono != ""){
+                    if(logar == false){
+                        polb.monomes.push_back(acumMono);
+                    }else{
+                        acumMono+=b[i]; 
+
+                    }
                 }
+                if(!logar){
                 if(b[i]=='-'){
                         acumMono="-";
                 }else{
                     acumMono="";
                 }
-            }else if( i==b.length()-1){
-                acumMono+=b[i];
-                if(acumMono != "0"){
-                polb.monomes.push_back(acumMono);
                 }
-                if(b[i]=='-'){
-                        acumMono="-";
-                }else{
-                    acumMono="";
-                }
+                
             }else{
                 acumMono+=b[i];  
             }
+            
+            if(i==b.length()-1){
+                if(acumMono != "0" && acumMono != ""){
+                    if(!logar){
+                    polb.monomes.push_back(acumMono);
+                    }else{
+                        if(b[i]!=')'){
+                            acumMono+=b[i];  
+                        }
+                    }
+                }
+                if(!logar){
+                if(b[i]=='-'){
+                        acumMono="-";
+                }else{
+                    acumMono="";
+                }
+                }
+            }
+
         }
 
         for(int i=0; i<pola.monomes.size(); i++){
+
             for(int j=0; j<polb.monomes.size(); j++){
                 string result = multiplyMono(pola.monomes.at(i), polb.monomes.at(j));
                 if(result[0]== '-' ||  final.empty()){
@@ -358,16 +483,13 @@ class Poly{
                 }
             }
         }
-        return simplify(final);
+        flush();
+        return final;
 
     }
 
-   
-
-
     
 };
-
 
 
 
