@@ -31,6 +31,12 @@
 
 using namespace std;
 
+/**
+Creation of both the class for variables and the class for Mono
+
+
+*/
+
 class Variable{
     public:
         int potencia;
@@ -152,6 +158,8 @@ class Mono{
         
         
     }  
+    
+
 
     void printMono(){
         for(int i=0; i<variables.size(); i++){
@@ -173,6 +181,10 @@ class Mono{
 
     
 };
+
+//####################################################################################################################
+
+
 
 class Poly{
     public:
@@ -513,6 +525,10 @@ class Poly{
 
     
 };
+
+/**
+Main function of the polinome.cpp
+*/
 
 int main(){
     Poly p;
