@@ -481,6 +481,7 @@ class Poly{
                 }else{
                     final+="+"+result;
                 }
+                cout<<pola.monomes.at(i)<<" times "<<polb.monomes.at(j)<<" equals "<<result<<endl;
             }
         }
         flush();

@@ -1,13 +1,12 @@
-int count = 0; 
-int i=0;
-    while(count<n)
-    {
-        count++;
-        while(i<10){
-            if(carla==0){
-                cout<<"yei"<<endl;
-            }
-            i++;
-        }
-    }
+#include <stdio.h> 
+void main() 
+{ 
+    int i, n = 8; 
+    for (i = 1; i <= n; i++) { 
+        printf("Hello Word !!!"); 
+        for (i = 1; i <= n; i++) { 
+        printf("Hello Word !!!", i); 
+    } 
+    } 
 
+} 

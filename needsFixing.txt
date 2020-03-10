@@ -1,16 +1,12 @@
 
-TODAY 
-fractions 
 
-logs 
+- CORE GUIDELINES AND DOCUMENTATION AND BEAUTIFY CODE 
 
-total complexity 
+- DO WITHOUT SIMPLIFICATIN AND UPLOAD 
 
-genérico
+- EXAMPLES
 
+- COTA ASINTÓTICA
 
+- POLYNOMIAL SIMPLIFICATION
 
-TOMORROW
-5. checking c++17 guidelines/ multiply (2 hour)
-7. testing with different types of code (1 hour)
-8. writting manual (30 min)
