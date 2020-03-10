@@ -59,14 +59,19 @@ En caso de que no se encuentra ninguna de las palabras claves se utiliza el mét
 
 1. Crear un archivo cpp con el código que quiere analizar, asegurarse que este archivo esté dentro de la carpeta del programa. 
 ##### RESTRICCIONES: las variables que se incluyan en el archivo deben de tener un nombre de una letra mayúscula o minúscula del abecedario, de lo contrario se calculará su complejidad pero no se podrá ver la versión simplificada. 
-2. En la terminar correr los siguientes comandos de compilación con c++17: 
+2. En la terminal correr los siguientes comandos de compilación con c++17: 
  - g++ analyzer.cpp -std=c++17 -o travis_gcc_cpp17
  -  ./travis_gcc_cpp17 -i code.cpp
  -  python poly.py
- 3. Es importante tener descargado con antelación en compilador g++ así como la librería de simpy. En caso de no tenerlos, correr los siguientes comandos:
+ 3. Es importante tener descargado con antelación el compilador g++ así como la librería de simpy. En caso de no tenerla, correr el siguiente comando:
    - pip install sympy
 
 
 ## 3. Referencias
-
+https://www.iso.org/obp/ui/#iso:std:iso-iec:14882:ed-5:v1:en
+https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md
+http://www.cplusplus.com/
+http://webdiis.unizar.es/asignaturas/PROG1/doc/materiales/sintaxis_cpp.pdf
+https://developer.lsst.io/cpp/api-docs.html
+https://www.sympy.org/es/
  
