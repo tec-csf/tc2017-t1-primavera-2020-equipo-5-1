@@ -58,7 +58,7 @@ En caso de que no se encuentra ninguna de las palabras claves se utiliza el mét
 ### 2.1 Pasos a seguir para utilizar la aplicación
 
 1. Crear un archivo cpp con el código que quiere analizar, asegurarse que este archivo esté dentro de la carpeta del programa. 
-# RESTRICCIONES: las variables que se incluyan en el archivo deben de tener un nombre de una letra mayúscula o minúscula del abecedario, de lo contrario se calculará su complejidad pero no se podrá ver la versión simplificada. 
+#### RESTRICCIONES: las variables que se incluyan en el archivo deben de tener un nombre de una letra mayúscula o minúscula del abecedario, de lo contrario se calculará su complejidad pero no se podrá ver la versión simplificada. 
 2. En la terminar correr los siguientes comandos de compilación con c++17: 
  - g++ analyzer.cpp -std=c++17 -o travis_gcc_cpp17
  -  ./travis_gcc_cpp17 -i code.cpp
