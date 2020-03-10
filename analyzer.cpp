@@ -109,7 +109,7 @@ string findTypeComparison(string comparison, int operation){
 }
 
 /**
- * Compute mean and standard deviation for a collection of data.
+ * Find the factor of incrementation in a for loop or while loop.
  *
  * @param[out] mean the mean of `data`, or `NaN` if `data` is empty
  * @param[out] stdDev the unbiased (sample) standard deviation, or `NaN`
@@ -601,7 +601,7 @@ string checkWhile(string instruction){
         cout<<final<<endl;
         writeFile(final);
         system("pip install sympy");
-        system("python poly.py");
+        system("python3 poly.py");
     }
    
    int writeFile (string towrite) 
