@@ -9,7 +9,7 @@ contents= contents.replace(' ','')
 print("T(n)")
 print(contents)
 print(simplify(contents))
-print("Cota Asintótica")
+print("Cota Asintotica")
 result= str(simplify(contents))
 print(result[:result.find("+")])
 
