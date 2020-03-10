@@ -201,7 +201,7 @@ T cicleTimes(T instruction){
     }
 
     if(increment.find("+") != string::npos){
-        return findTypeComparison(comparison, 1)+"-"+initialized.substr(initialized.find("=")+1)+"* "+"1/"+findIncrement(increment);
+        return findTypeComparison(comparison, 1)+"-"+initialized.substr(initialized.find("=")+1)+"* "+"(1/"+findIncrement(increment)+")";
         
 
     }
@@ -238,7 +238,7 @@ T cicleTimes(T instruction){
 
 I countElemental(T instruction){
     int num =0;
-    char tmp[] = {'+', '*', '=', '-', '/', '%', '[', '<', '>'};
+    char tmp[] = {'+', '*', '=', '-', '/', '%', '[', '<', '>', ','};
     string tmpdouble[] = {"++", "--", ">=", "!=", "==", "<=", "&&", "||"};
     set<char> operators(tmp, tmp+ (sizeof(tmp) / sizeof(tmp[0])));
     set<string> doubleOp(tmpdouble, tmpdouble+ (sizeof(tmpdouble) / sizeof(tmpdouble[0])));
@@ -279,7 +279,7 @@ T analyzeFor(T instruction){
     
     string cycle_times= cicleTimes(instruction);
     
-    return to_string(a)+"+"+to_string(b)+"*("+cicleTimes(instruction)+")+"+to_string(c)+"*("+cicleTimes(instruction)+"+1 )";
+    return to_string(a)+"+"+to_string(b)+"*("+cicleTimes(instruction)+")+"+to_string(c)+"*("+cicleTimes(instruction)+"+1)";
     }
 
 /**
@@ -370,16 +370,21 @@ string checkWhile(string instruction){
 
    void analyzeWhile(string instruction, int line){
        int elemental = countElemental(instruction.substr(instruction.find("("), instruction.find("(")-1));
-       string symbols[] = {"<","<=", ">",">=","==","!="};
+       int saveIndex;
+       string symbols[] = {"<", ">", "<=",">=","==","!="};
        string delimeter ="";
         for(int i= 0; i<6; i++){
             if(instruction.find(symbols[i])!= string::npos){
                 delimeter= symbols[i];
+                saveIndex = i;
             }
         }
-        
+        int offset=0;
+        if(saveIndex>1){
+            offset=1;
+        }
         string var1= instruction.substr(instruction.find("(")+1, instruction.find(delimeter)-instruction.find("(")-1);
-        string var2= instruction.substr(instruction.find(delimeter)+1,instruction.find(")")-instruction.find(delimeter)-1);
+        string var2= instruction.substr(instruction.find(delimeter)+1+offset,instruction.find(")")-instruction.find(delimeter)-offset-1);
         searching.insert(pair<string, int> (var1, line));
         searching.insert(pair<string, int> (var2, line));
         
@@ -393,12 +398,8 @@ string checkWhile(string instruction){
         }
       }
     string cicleTimes= totalComplexity.at(line).complexity;
-    if(instruction.find("{") != string::npos){
-          ciclos.push(cicleTimes);
-    }else{
-        ciclePen= cicleTimes;
-    }
-    totalComplexity.at(line).complexity = " "+to_string(elemental)+totalComplexity.at(line).complexity;
+    ciclePen= cicleTimes;
+    totalComplexity.at(line).complexity = to_string(elemental)+"*"+totalComplexity.at(line).complexity;
     totalComplexity.at(line).complexity = totalComplexity.at(line).complexity+"+1";
     }
 
@@ -411,6 +412,7 @@ string checkWhile(string instruction){
  */
 
     void addWhile(string instruction, string variable){
+        cout<<" variable "<<variable<<endl;
         string incrementing = variable;
         int whileIndex = searching[variable];
         string initializing;
@@ -420,7 +422,6 @@ string checkWhile(string instruction){
              initializing= pair.first;
          }
         }
-        cout<<instruction<<" this is the instruction "<<endl;
         searching.erase(initializing);
         if(instruction.find("/=") != string::npos){
             totalComplexity.at(whileIndex).complexity = "log"+findIncrement(instruction)+"("+initializing+"-"+variable+")";
@@ -559,18 +560,18 @@ string checkWhile(string instruction){
 
                 analyzeWhile(current, i);
             }else{
-                if(current.find("{") != string::npos){
                     if(!ciclePen.empty()){
                         ciclos.push(ciclePen);
                         ciclePen ="";
-                    }else{
+                    }
+                    if(current.find("{") != string::npos){
                         ciclos.push(" ");
 
                     }
                 }
                 int contElemental = countElemental(current);               
                 totalComplexity.at(i).setComplexity(to_string(contElemental), contElemental);
-            }
+            
 
             if(current.find("}") != string::npos){
                 ciclos.pop();
@@ -581,7 +582,7 @@ string checkWhile(string instruction){
                  while(!ciclos.empty()){
                     temp.push(ciclos.top());
                     if(ciclos.top() != " "){
-                    totalComplexity.at(i).cycle += " ("+ciclos.top()+") ";
+                    totalComplexity.at(i).cycle += "*("+ciclos.top()+")";
                     }
                     ciclos.pop();
 
@@ -620,7 +621,7 @@ string checkWhile(string instruction){
         for(int i=0; i<totalComplexity.size(); i++){
             string current = totalComplexity.at(i).instruction;
             if(current.find("while") != string::npos || current.find("for") != string::npos){
-                finalComplex.push_back(totalComplexity.at(i).complexity);
+                finalComplex.push_back(totalComplexity.at(i).complexity+"*("+totalComplexity.at(i).cycle+")");
             }else{
                 if(totalComplexity.at(i).eo!=0){
                     finalComplex.push_back(totalComplexity.at(i).complexity+"*("+totalComplexity.at(i).cycle+")");
@@ -632,7 +633,7 @@ string checkWhile(string instruction){
             if(i==finalComplex.size()-1){
                 final+=finalComplex.at(i);
             }else{
-                final+=finalComplex.at(i)+"+ ";
+                final+=finalComplex.at(i)+"+";
             }
         }
         

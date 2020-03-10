@@ -1,12 +1,7 @@
-#include <stdio.h> 
-void main() 
-{ 
-    int i, n = 8; 
-    for (i = 1; i <= n; i++) { 
-        printf("Hello Word !!!"); 
-        for (i = 1; i <= n; i++) { 
-        printf("Hello Word !!!", i); 
-    } 
-    } 
-
+int a = 0, b = 0; 
+for (i = 0; i < N; i++) { 
+    a = a + rand(); 
+} 
+for (j = 0; j < M; j++) { 
+    b = b + rand(); 
 } 
