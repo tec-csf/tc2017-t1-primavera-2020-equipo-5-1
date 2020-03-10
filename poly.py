@@ -9,8 +9,9 @@ contents= contents.replace(' ','')
 print("POLINOMIO")
 print("T(n)")
 print(contents)
-print(simplify(contents))
 print("COMPLEJIDAD")
+print(simplify(contents))
+
 print("Cota Asintotica")
 result= str(simplify(contents))
 result = result[:result.find("+")]
