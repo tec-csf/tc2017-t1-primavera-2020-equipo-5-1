@@ -178,6 +178,7 @@ class Mono{
         }
     } 
     
+    
      int findVar(string var){
         for(int i=0; i<variables.size(); i++){
             if(strcmp(variables.at(i).variable.c_str(), var.c_str())==0){
@@ -317,7 +318,14 @@ class Poly{
 
     }
 
-
+    /**
+    *
+    * Function for adding the polinomials 
+    *
+    *@param[in] a string of the variables and the coeficient
+    *@param[out] the result of the aded polinomial
+    */
+    
     void addPoly(string var, int coef){
         if(variab.find(var) != variab.end()){
             variab[var]+=coef;
