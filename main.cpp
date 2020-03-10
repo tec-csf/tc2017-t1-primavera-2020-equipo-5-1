@@ -22,7 +22,8 @@
  */
 #include "analyzer.cpp"
 
-int main(int argc, char* argv[])
+
+int main(int argc, char* argv[]) // main function of the code utilizing analyzer.cpp
 { 
    Analyzer<string, int> a;
    a.readFile(argc, argv);
