@@ -11,7 +11,6 @@
 #include <sstream>
 #include <tuple>
 #include "instruction.cpp"
-#include "polinome.cpp"
 
 
 using namespace std;
@@ -167,16 +166,15 @@ string findIncrement(string increment){
 
 T cicleTimes(T instruction){
     vector<T> partsOfFor= split(instruction, ';');
-    Poly simplifier;
     T comparison = partsOfFor.at(1);
     T initialized = partsOfFor.at(0);
     T increment = partsOfFor.at(2);
 
     if(increment.find("++") != string::npos){
-        return simplifier.simplify(findTypeComparison(comparison, 1)+"-"+initialized.substr(initialized.find("=")+1));
+        return (findTypeComparison(comparison, 1)+"-"+initialized.substr(initialized.find("=")+1));
     }
     if(increment.find("--") != string::npos){
-        return simplifier.simplify(initialized.substr(initialized.find("=")+1)+"-"+findTypeComparison(comparison, -1));
+        return (initialized.substr(initialized.find("=")+1)+"-"+findTypeComparison(comparison, -1));
     }
 
     if(increment.find("+") != string::npos){
@@ -190,7 +188,7 @@ T cicleTimes(T instruction){
     }
 
     if(increment.find("*=") != string::npos){
-        return " log"+increment.substr(increment.find("=")+1, increment.find(")")-increment.find("=")-1)+"("+simplifier.simplify(findTypeComparison(comparison, 1)+"-"+initialized.substr(initialized.find("=")+1))+")";
+        return " log"+increment.substr(increment.find("=")+1, increment.find(")")-increment.find("=")-1)+"("+findTypeComparison(comparison, 1)+"-"+initialized.substr(initialized.find("=")+1)+")";
     }
 
     if(increment.find("/=") != string::npos){
@@ -245,7 +243,6 @@ I countElemental(T instruction){
  */
 
 T analyzeFor(T instruction){
-    Poly poli;
     vector<string> partsOfFor= split(instruction, ';');
 
     T comparison = partsOfFor.at(1);
@@ -257,26 +254,9 @@ T analyzeFor(T instruction){
     int c = countElemental(increment);
 
     
-    string cycle_times= poli.simplify(cicleTimes(instruction));
-    poli.flush();
-    string tempB= poli.multiply(cycle_times, to_string(b));
-    cout<<" cicle times "<<cicleTimes(instruction)<<endl;
-    poli.flush();
-    string tempC= poli.multiply(cycle_times+"+1", to_string(c));
-    poli.flush();
-    tempC= poli.simplify(tempC);
-    cout<<" times c "<<tempC<<endl;
-    poli.flush();
-    if(tempB[0]=='-' && tempC[0]=='-'){
-        return poli.simplify(to_string(a)+tempB+tempC);
-    }else if(tempB[0]=='-'){
-        return poli.simplify(to_string(a)+tempB+"+"+tempC);
-    }else if(tempC[0]=='-'){
-        return poli.simplify(to_string(a)+"+"+tempB+tempC);
-    }else{
-        return poli.simplify(to_string(a)+"+"+tempB+"+"+tempC);
-    }
+    string cycle_times= cicleTimes(instruction);
     
+    return to_string(a)+"+"+to_string(b)+"*("+cicleTimes(instruction)+")+"+to_string(c)+"*("+cicleTimes(instruction)+"+1 )";
     }
 
 /**
@@ -365,7 +345,6 @@ string checkWhile(string instruction){
  */
 
    void analyzeWhile(string instruction, int line){
-       Poly p;
        int elemental = countElemental(instruction.substr(instruction.find("("), instruction.find("(")-1));
        string symbols[] = {"<","<=", ">",">=","==","!="};
        string delimeter ="";
@@ -395,9 +374,8 @@ string checkWhile(string instruction){
     }else{
         ciclePen= cicleTimes;
     }
-    totalComplexity.at(line).complexity = p.simplify(" "+to_string(elemental)+totalComplexity.at(line).complexity);
-    p.flush();
-    totalComplexity.at(line).complexity =  p.simplify(totalComplexity.at(line).complexity+"+1");
+    totalComplexity.at(line).complexity = " "+to_string(elemental)+totalComplexity.at(line).complexity;
+    totalComplexity.at(line).complexity = totalComplexity.at(line).complexity+"+1";
     }
 
 /**
@@ -408,7 +386,6 @@ string checkWhile(string instruction){
 
     void addWhile(string instruction, string variable){
         string incrementing = variable;
-        Poly simp;
         int whileIndex = searching[variable];
         string initializing;
         searching.erase(variable);
@@ -417,25 +394,31 @@ string checkWhile(string instruction){
              initializing= pair.first;
          }
         }
-
+        cout<<instruction<<" this is the instruction "<<endl;
         searching.erase(initializing);
         if(instruction.find("/=") != string::npos){
-            totalComplexity.at(whileIndex).complexity = "log"+findIncrement(instruction)+"("+simp.simplify(initializing+"-"+variable)+")";
+            totalComplexity.at(whileIndex).complexity = "log"+findIncrement(instruction)+"("+initializing+"-"+variable+")";
         }
         else if(instruction.find("*=") != string::npos){
-            totalComplexity.at(whileIndex).complexity = "log"+findIncrement(instruction)+"("+simp.simplify(initializing+"-"+variable)+")";
+            totalComplexity.at(whileIndex).complexity = "log"+findIncrement(instruction)+"("+initializing+"-"+variable+")";
 
         }
         else if(instruction.find("/") != string::npos){
-            totalComplexity.at(whileIndex).complexity = "log"+findIncrement(instruction)+"("+simp.simplify(initializing+"-"+variable)+")";
+            totalComplexity.at(whileIndex).complexity = "log"+findIncrement(instruction)+"("+initializing+"-"+variable+")";
         }
         else if(instruction.find("*") != string::npos){
-            totalComplexity.at(whileIndex).complexity = "log"+findIncrement(instruction)+"("+simp.simplify(initializing+"-"+variable)+")";
+            totalComplexity.at(whileIndex).complexity = "log"+findIncrement(instruction)+"("+initializing+"-"+variable+")";
 
-        }else if(findIncrement(instruction).empty()){
-            totalComplexity.at(whileIndex).complexity = simp.simplify(variable+"-"+initializing);
-        }else{
+        }else if(instruction.find("++") != string::npos){
+            totalComplexity.at(whileIndex).complexity = variable+"-"+initializing;
+        }else if(instruction.find("+=") != string::npos){
             totalComplexity.at(whileIndex).complexity = variable+"-"+initializing+ "* 1/"+findIncrement(instruction);
+        }else if(instruction.find("--") != string::npos){
+            totalComplexity.at(whileIndex).complexity = initializing+"-"+variable;
+        }else if(instruction.find("-=") != string::npos){
+            totalComplexity.at(whileIndex).complexity = initializing+"-"+variable+ "* 1/"+findIncrement(instruction);
+        }else{
+           totalComplexity.at(whileIndex).complexity = "non of the above";  
         }
 
     }
@@ -522,7 +505,6 @@ string checkWhile(string instruction){
 
 
    void analyzeComplexity(){
-       Poly p;
     for (int i=0; i<counterLines; i++){
             string current = totalComplexity.at(i).instruction;
 
@@ -567,9 +549,7 @@ string checkWhile(string instruction){
                  while(!ciclos.empty()){
                     temp.push(ciclos.top());
                     if(ciclos.top() != " "){
-                    totalComplexity.at(i).cycle = p.multiply(totalComplexity.at(i).cycle, ciclos.top());
-
-                    p.flush();
+                    totalComplexity.at(i).cycle += " ("+ciclos.top()+") ";
                     }
                     ciclos.pop();
 
@@ -595,7 +575,6 @@ string checkWhile(string instruction){
     }
 
     void calculateFinalComplexity(){
-        Poly p;
         vector<string> finalComplex;
         string final;
         for(int i=0; i<totalComplexity.size(); i++){
@@ -603,19 +582,37 @@ string checkWhile(string instruction){
             if(current.find("while") != string::npos || current.find("for") != string::npos){
                 finalComplex.push_back(totalComplexity.at(i).complexity);
             }else{
-                finalComplex.push_back(p.multiply(totalComplexity.at(i).complexity, totalComplexity.at(i).cycle));
-                p.flush();
+                if(totalComplexity.at(i).eo!=0){
+                    finalComplex.push_back(totalComplexity.at(i).complexity+"*("+totalComplexity.at(i).cycle+")");
+                }
             }
         } 
 
         for(int i=0; i<finalComplex.size(); i++){
-            final+=finalComplex.at(i)+"------";
+            if(i==finalComplex.size()-1){
+                final+=finalComplex.at(i);
+            }else{
+                final+=finalComplex.at(i)+"+ ";
+            }
         }
+        
 
         cout<<"T(n)= "<<endl;
-        cout<<p.simplify(final)<<endl;
+        cout<<final<<endl;
+        writeFile(final);
+        system("pip install sympy");
+        system("python poly.py");
     }
    
+   int writeFile (string towrite) 
+{
+  ofstream myfile;
+  cout<<"writing"<<endl;
+  myfile.open ("example.txt");
+  myfile << towrite;
+  myfile.close();
+  return 0;
+}
 
 
 };
