@@ -511,6 +511,28 @@ class Analyzer{
         (totalComplexity.at(i)).printInstruction();
     }  
     }
+
+    void calculateFinalComplexity(){
+        Poly p;
+        vector<string> finalComplex;
+        string final;
+        for(int i=0; i<totalComplexity.size(); i++){
+            string current = totalComplexity.at(i).instruction;
+            if(current.find("while") != string::npos || current.find("for") != string::npos){
+                finalComplex.push_back(totalComplexity.at(i).complexity);
+            }else{
+                finalComplex.push_back(p.multiply(totalComplexity.at(i).complexity, totalComplexity.at(i).cycle));
+                p.flush();
+            }
+        } 
+
+        for(int i=0; i<finalComplex.size(); i++){
+            final+=finalComplex.at(i);
+        }
+
+        cout<<"This is the total complexity = "<<endl;
+        cout<<p.simplify(final)<<endl;
+    }
    
 
 
@@ -522,4 +544,5 @@ int main(int argc, char* argv[])
    a.readFile(argc, argv);
    a.analyzeComplexity();
    a.printComplexity();
+   a.calculateFinalComplexity();
 }

@@ -4,6 +4,9 @@ int i=0;
     {
         count++;
         while(i<10){
+            if(carla==0){
+                cout<<"yei"<<endl;
+            }
             i++;
         }
     }
