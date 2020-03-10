@@ -7,9 +7,9 @@ dist: bionic
 compiler: gcc
 cache: pip
 install:
-  - pip install sympy
+  - pip3 install sympy
 
 script: 
   - g++ analyzer.cpp -std=c++17 -o travis_gcc_cpp17
   - ./travis_gcc_cpp17 -i code.cpp
-  - python poly.py
+  - python3 poly.py
