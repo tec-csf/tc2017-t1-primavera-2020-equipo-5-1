@@ -57,6 +57,10 @@ class Instruction{
     {
     cout << '|' << setw(5) << t << '|' << setw(30) << t2 << '|' << setw(30) << t3 << '|' << setw(45) << t4 << '|' << setw(5) << t5 << '|'<<endl; 
     }
+    
+    /*
+    functions to prints the new instruction and titles
+    */
 
     void printInstruction()
     {
