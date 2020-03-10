@@ -32,9 +32,7 @@
 using namespace std;
 
 /**
-Creation of both the class for variables and the class for Mono
-
-
+* Creation of both the class for Variables and the class for Mono
 */
 
 class Variable{
@@ -60,7 +58,11 @@ class Mono{
         variables.push_back(a);
     }
     
-    
+    /**
+    * Void to turn to monome
+    *
+    * @param[in] string fo the mono
+    */
     void turnToMonome(string mono){
         string acumCoef = "";
         string acumVar = "";
@@ -160,7 +162,13 @@ class Mono{
     }  
     
 
-
+    /**
+    *
+    *Function to print
+    *
+    *@param[Out] print of the mono with power, variable and coeficent
+    */
+    
     void printMono(){
         for(int i=0; i<variables.size(); i++){
             cout<<"potencia "<<variables.at(i).potencia<<endl;
@@ -184,7 +192,9 @@ class Mono{
 
 //####################################################################################################################
 
-
+/**
+Polynomial fucntion
+*/
 
 class Poly{
     public:
