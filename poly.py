@@ -15,12 +15,12 @@ print("Cota Asintotica")
 result= str(simplify(contents))
 result = result[:result.find("+")]
 other = ""
-if(result.find("**3") != -1):
-    other+="n**2";
+if(result.find("**4") != -1):
+    other+="n**4";
 elif(result.find("**3") != -1):
     other+="n**3";
-elif(result.find("**4") != -1):
-    other+="n**4";
+elif(result.find("**2") != -1):
+    other+="n**2";
 elif(result.find("n") != -1):
     other+="n";
 
