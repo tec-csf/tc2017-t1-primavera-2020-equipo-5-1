@@ -11,5 +11,5 @@ install:
 
 script: 
   - g++ main.cpp -std=c++17 -o travis_gcc_cpp17
-  - ./travis_gcc_cpp17 -i code.cpp
+  - ./travis_gcc_cpp17 -i code2.cpp
  
