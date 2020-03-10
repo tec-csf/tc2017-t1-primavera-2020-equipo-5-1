@@ -1,7 +1,15 @@
-language: cpp
+language: 
+- cpp
+- python
+python:
+  - "3.5"
 dist: bionic
 compiler: gcc
+cache: pip
+install:
+  - pip install sympy
 
 script: 
-  - g++ analyzer.cpp -std=c++17 -o travis_gcc_cpp17
+  - g++ analyzerNoSimp.cpp -std=c++17 -o travis_gcc_cpp17
   - ./travis_gcc_cpp17 -i code.cpp
+  - python poly.py
