@@ -492,5 +492,10 @@ class Poly{
     
 };
 
+int main(){
+    Poly p;
+    cout<<p.multiply("2n+3", "m+2")<<endl;
+}
+
 
 

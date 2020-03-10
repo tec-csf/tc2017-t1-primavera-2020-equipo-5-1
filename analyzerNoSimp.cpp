@@ -600,6 +600,8 @@ string checkWhile(string instruction){
         cout<<"T(n)= "<<endl;
         cout<<final<<endl;
         writeFile(final);
+        system("pip install sympy");
+        system("python poly.py");
     }
    
    int writeFile (string towrite) 
