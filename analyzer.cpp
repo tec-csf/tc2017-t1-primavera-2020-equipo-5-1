@@ -664,10 +664,11 @@ class Analyzer{
                         {
                             ciclos.push(" ");
                         }
-                    }
-                        
+
                     contElemental = countElemental(currentInstruction);               
                     programLines.at(i).setComplexity(to_string(contElemental), contElemental);
+                    }
+   
                     
 
                     if(currentInstruction.find("}") != string::npos)
@@ -752,6 +753,9 @@ class Analyzer{
                 cout<<"T(n)= "<<endl;
                 cout<<final<<endl;
                 writeFile(final);
+                system("pip install sympy");
+                system("python3 poly.py");
+
                 
             }
 
