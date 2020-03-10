@@ -10,7 +10,11 @@ print("POLINOMIO")
 print("T(n)")
 print(contents)
 print(simplify(contents))
+<<<<<<< HEAD
 print("COMPLEJIDAD")
+=======
+print("Cota Asintotica")
+>>>>>>> 393eaac7f677b04aec45db1d6a0223c0ab93f05f
 result= str(simplify(contents))
 result = result[:result.find("+")]
 other = ""
