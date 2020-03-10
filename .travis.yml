@@ -5,7 +5,7 @@ python:
   - "3.5"
 dist: bionic
 compiler: gcc
-
+cache: pip
 install:
   - pip install symp
 
