@@ -7,5 +7,4 @@ print("this is python")
 
 n = symbols('n')
 contents= contents.replace(' ','')
-print(contents)
 print(simplify(contents))
