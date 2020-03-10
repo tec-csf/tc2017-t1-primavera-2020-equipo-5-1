@@ -1,4 +1,27 @@
 
+/*
+ * This file is part of {{ tc2017-t1-primavera-2020-equipo-5-1 }}.
+ *
+ * Developed for Diseño, Análisis de Algoritmos
+ * This product includes software developed by the LSST Project
+ * (https://www.lsst.org).
+ * See the COPYRIGHT file at the top-level directory of this distribution
+ * for details of code ownership.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 #include <iostream>
 #include <cstring>
 #include <string>
@@ -20,6 +43,8 @@ using namespace std;
  * 
  * @tparam T datatype used to store variables in a polynomials
  * @tparam I datatype used to store coeficient and power of monomial
+ * 
+ * @note although this is a generic class the implementation only applies for <string, int> types. 
  */
 
 template <class T, class I>
@@ -111,10 +136,8 @@ string findTypeComparison(string comparison, int operation){
 /**
  * Find the factor of incrementation in a for loop or while loop.
  *
- * @param[out] mean the mean of `data`, or `NaN` if `data` is empty
- * @param[out] stdDev the unbiased (sample) standard deviation, or `NaN`
- *     if `data` contains fewer than 2 elements
- * @param[in] data the data to analyze
+ * @param[out] sting with the incrementing factor
+ * @param[in] string that has the incrementing instruction
  */
 
 string findIncrement(string increment){
@@ -158,7 +181,7 @@ string findIncrement(string increment){
 }
 
 /**
- * Calculates the amount of times a cilce will be run 
+ * Calculates the amount of times a cicle will be run 
  *
  * @param[out] string with amount of times cicle will be run 
  * @param[in] cicle in the form of an instruction
@@ -339,9 +362,10 @@ string checkWhile(string instruction){
 }
 
 /**
- * Saves assigned variables in a vector   
+ * Analyzes while loop 
  *
- * @param[in] instruction where variable is assigned
+ * @param[in] the instruction in which the while loop is found 
+ * @param[in] the line in which the while loop is found 
  */
 
    void analyzeWhile(string instruction, int line){
@@ -379,9 +403,11 @@ string checkWhile(string instruction){
     }
 
 /**
- * Saves assigned variables in a vector   
+ * If it finds the variable increment within the while loop it will return the amount of times the variable is incremented
  *
  * @param[in] instruction where variable is assigned
+ * @param[in] variable found in the increment
+ * 
  */
 
     void addWhile(string instruction, string variable){
@@ -424,10 +450,12 @@ string checkWhile(string instruction){
     }
 
 /**
- * Saves assigned variables in a vector   
+ * Analyzes the amount of elemental operations in an if statement
  *
- * @param[in] instruction where variable is assigned
+ * @param[in] instruction where the if statement is found 
+ * @param[out] the amount of elemental operations in the if statement
  */
+
     int analyzeIF(string instruction){
         string str = instruction; // instruccion a analizar (en este caso IF)
 
@@ -439,9 +467,10 @@ string checkWhile(string instruction){
     }
 
 /**
- * Saves assigned variables in a vector   
+ * Analyzes the complexity of a print instruction including cout, printf, and reutrns
  *
- * @param[in] instruction where variable is assigned
+ * @param[in] the isntruction to be analizes
+ * @param[out] the amount of elemental operations found according to the amount of times a variable  is retrieved
  */
     int analyzePrint(string instruction){
         string sub1 = "";
@@ -502,7 +531,10 @@ string checkWhile(string instruction){
         return finalComplex+varia.size();
 
     }
-
+/**
+ * Iterates through the vector of objects type Instruction and saves the final variable in as the complexity of the given function in the vector 
+ *
+ */
 
    void analyzeComplexity(){
     for (int i=0; i<counterLines; i++){
@@ -566,6 +598,10 @@ string checkWhile(string instruction){
    }
 
   
+/**
+ * Analyzes the complexity of a print instruction including cout, printf, and reutrns
+ * 
+ */
 
     void printComplexity(){
          totalComplexity.at(0).printTitles();
@@ -574,6 +610,10 @@ string checkWhile(string instruction){
     }  
     }
 
+/**
+ * Calculates final complexity and prints it
+ * 
+ */
     void calculateFinalComplexity(){
         vector<string> finalComplex;
         string final;
@@ -603,19 +643,26 @@ string checkWhile(string instruction){
         system("pip install sympy");
         system("python3 poly.py");
     }
+
+/**
+ * Writes in file called example.txt
+ * 
+ */
    
-   int writeFile (string towrite) 
-{
-  ofstream myfile;
-  cout<<"writing"<<endl;
-  myfile.open ("example.txt");
-  myfile << towrite;
-  myfile.close();
-  return 0;
-}
+            int writeFile (string towrite) 
+            {
+            ofstream myfile;
+            cout<<"writing"<<endl;
+            myfile.open ("example.txt");
+            myfile << towrite;
+            myfile.close();
+            return 0;
+            }
 
 
 };
+
+
 int main(int argc, char* argv[])
 {
     
